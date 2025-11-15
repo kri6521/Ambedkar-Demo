@@ -28,21 +28,17 @@ PERSIST_DIR = "chroma_db"
 CHUNK_SIZE = 400
 CHUNK_OVERLAP = 50
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-OLLAMA_MODEL = "mistral"  # name that appears in `ollama ls` (e.g., 'mistral')
+OLLAMA_MODEL = "mistral"  
 
 
 def build_vectorstore(persist_directory: str = PERSIST_DIR) -> Chroma:
-    """Build or load a Chroma vectorstore persisted to disk."""
-    # Create embeddings object (this will download the sentence-transformers model locally)
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
 
-    # If a persisted chroma DB exists, load it
     if os.path.isdir(persist_directory) and any(Path(persist_directory).iterdir()):
         print(f"Loading existing Chroma DB from '{persist_directory}'...")
         db = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
         return db
 
-    # Otherwise, load the speech file and create the DB
     if not SPEECH_PATH.exists():
         raise FileNotFoundError(f"speech.txt not found at: {SPEECH_PATH.resolve()}")
 
@@ -62,19 +58,15 @@ def build_vectorstore(persist_directory: str = PERSIST_DIR) -> Chroma:
 
     print("Creating embeddings and building Chroma DB (this may take a moment)...")
     db = Chroma.from_documents(texts, embeddings, persist_directory=persist_directory)
-    # Note: persist() is deprecated in newer ChromaDB versions - persistence is automatic
     print(f"Chroma DB persisted to '{persist_directory}'.")
     return db
 
 
 def build_qa_chain(db: Chroma):
-    """Create a retrieval QA chain using Ollama as the LLM (LCEL pattern)."""
     if not OLLAMA_AVAILABLE:
         raise ImportError(
-            "Ollama is not available. Please install it with: pip install langchain-ollama"
         )
     
-    # Create Ollama LLM wrapper
     try:
         llm = OllamaLLM(model=OLLAMA_MODEL, temperature=0.0)
     except Exception as e:
@@ -84,10 +76,8 @@ def build_qa_chain(db: Chroma):
             f"Original error: {str(e)}"
         ) from e
 
-    # Create retriever from Chroma
     retriever = db.as_retriever(search_type="mmr", search_kwargs={"k": 4})
 
-    # Create prompt template
     prompt = ChatPromptTemplate.from_template(
         """Answer the following question based only on the provided context:
 
@@ -98,7 +88,6 @@ Question: {input}
 Answer:"""
     )
 
-    # Create the chain using LCEL (LangChain Expression Language)
     def format_docs(docs):
         return "\n\n".join(doc.page_content for doc in docs)
 
@@ -157,4 +146,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
