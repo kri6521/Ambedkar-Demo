@@ -60,12 +60,12 @@ pip install -r requirements.txt
 ---
 
 ## 📂 Project Structure
-.
+```bash
 ├── main.py
 ├── speech.txt
 ├── requirements.txt
 └── chroma_db/         (auto-created after first run)
-
+```
 ---
 
 ## Running the App
