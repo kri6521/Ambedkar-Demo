@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
 .
 ├── main.py
 ├── speech.txt
@@ -71,16 +71,24 @@ pip install -r requirements.txt
 ## Running the App
 
 ### 1. Start the Ollama service
+```bash
 ollama serve
+```
 
 ### 2. Run the RAG application
+```bash
 python main.py
+```
 
-# Example:
+## Example:
+```bash
 Question> What does the speech say about social reform?
+```
 
 ## Exit the app:
+```bash
 exit
+```
 
 ---
 
@@ -112,4 +120,4 @@ OllamaLLM(model="mistral")
 ### 7. LangChain Expression Language (LCEL)
 Pipeline:
 retriever → prompt → LLM → output parser
----
+
