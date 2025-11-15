@@ -38,24 +38,28 @@ https://ollama.ai/docs
 
 ```bash
 curl -fsSL https://ollama.ai/install.sh | sh
+```
 
 ---
 
-## Setup Instructions
-1. Create a conda environment
+##  Setup Instructions
 
+### 1. Create a conda environment
 ```bash
 conda create -n ambedkar-rag python=3.10 -y
 conda activate ambedkar-rag
+```
 
 ---
 
-2. Install Python dependencies
+### 2. Install Python dependencies
+```bash
 pip install -r requirements.txt
+```
 
 ---
 
-📂 Project Structure
+# 📂 Project Structure
 .
 ├── main.py
 ├── speech.txt
@@ -65,64 +69,47 @@ pip install -r requirements.txt
 ---
 
 ## Running the App
-1. Start the Ollama service
+
+### 1. Start the Ollama service
 ollama serve
 
-2. Run the RAG application
+### 2. Run the RAG application
 python main.py
 
-
-Ask questions such as:
-
+# Example:
 Question> What does the speech say about social reform?
 
-
-Exit with:
-
+## Exit the app:
 exit
 
-📘 How the Pipeline Works
-1. Load the text
+---
 
+## How the Pipeline Works
+
+### 1. Load the text
 speech.txt is loaded using TextLoader.
 
-2. Split into chunks
-
+### 2. Split into chunks
 CharacterTextSplitter creates overlapping chunks for better retrieval.
 
-3. Create embeddings
-
+### 3. Create embeddings
 Using:
-
 sentence-transformers/all-MiniLM-L6-v2
 
-4. Store in ChromaDB
-
+### 4. Store in ChromaDB
 Vector store is saved locally in:
-
 ./chroma_db
 
-5. Retrieve context
-
+### 5. Retrieve context
 Retriever uses:
-
 MMR retrieval
-
 k = 4 relevant chunks
 
-6. Generate the answer
-
+### 6. Generate the answer
 Uses:
-
 OllamaLLM(model="mistral")
 
-
-The LangChain Expression Language (LCEL) connects:
-
-retriever
-
-prompt
-
-LLM
-
-output parser
+### 7. LangChain Expression Language (LCEL)
+Pipeline:
+retriever → prompt → LLM → output parser
+---
